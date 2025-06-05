@@ -18,7 +18,7 @@ func skipWhitespace(input go_parser_combinators.Input) go_parser_combinators.Inp
 }
 
 func Lit(str string) go_parser_combinators.Parser[string] {
-	fn := go_parser_combinators.ParserFunc[string](func(input go_parser_combinators.Input) go_parser_combinators.ParseResult[string] {
+	return go_parser_combinators.ParserFunc[string](func(input go_parser_combinators.Input) go_parser_combinators.ParseResult[string] {
 		start := skipWhitespace(input)
 		if strings.HasPrefix(start.Source, str) {
 			return go_parser_combinators.ParseResult[string]{
@@ -32,14 +32,10 @@ func Lit(str string) go_parser_combinators.Parser[string] {
 		}
 		return go_parser_combinators.ParseResult[string]{Err: fmt.Errorf("'%s' expected but %s found", str, found)}
 	})
-	return go_parser_combinators.ParserImpl[string]{
-		Name: fmt.Sprintf("Lit(%s)", str),
-		Fn:   fn,
-	}
 }
 
 func Re(re *regexp.Regexp) go_parser_combinators.Parser[string] {
-	fn := go_parser_combinators.ParserFunc[string](func(input go_parser_combinators.Input) go_parser_combinators.ParseResult[string] {
+	return go_parser_combinators.ParserFunc[string](func(input go_parser_combinators.Input) go_parser_combinators.ParseResult[string] {
 		start := skipWhitespace(input)
 		loc := re.FindStringIndex(start.Source)
 		if loc != nil && loc[0] == 0 {
@@ -53,8 +49,4 @@ func Re(re *regexp.Regexp) go_parser_combinators.Parser[string] {
 			Err: fmt.Errorf("regex match failed: %s", re.String()),
 		}
 	})
-	return go_parser_combinators.ParserImpl[string]{
-		Name: fmt.Sprintf("Re(%s)", re.String()),
-		Fn:   fn,
-	}
 }

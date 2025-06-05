@@ -34,10 +34,11 @@ func main() {
     numberParser := combinators.Re(regexp.MustCompile(`\d+`))
     parser := combinators.SeqR(helloParser, numberParser)
     
-    input := go_parser_combinators.NewInput("hello 123")
+	query := "hello 123"
+    input := go_parser_combinators.NewInput(query)
     result := parser.Apply(input)
     
-    if result.Err != nil {
+    if result.Err != nil || len(query) != result.Rest.Position.Offset {
         fmt.Printf("Parse error: %v\n", result.Err)
     } else {
         fmt.Printf("Parsed: %s\n", result.Result)  // Output: Parsed: 123

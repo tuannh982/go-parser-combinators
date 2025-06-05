@@ -8,31 +8,18 @@ type ParseResult[T any] struct {
 
 type Parser[T any] interface {
 	Apply(input Input) ParseResult[T]
-	String() string
 }
 
 type ParserFunc[T any] func(Input) ParseResult[T]
 
-type ParserImpl[T any] struct {
-	Name string
-	Fn   ParserFunc[T]
-}
-
-func (p ParserImpl[T]) Apply(input Input) ParseResult[T] {
-	return p.Fn(input)
-}
-
-func (p ParserImpl[T]) String() string {
-	return p.Name
+func (p ParserFunc[T]) Apply(input Input) ParseResult[T] {
+	return p(input)
 }
 
 type ParserGenerator[T any] func() Parser[T]
 
 func Lazy[T any](f ParserGenerator[T]) Parser[T] {
-	return ParserImpl[T]{
-		Name: "lazy",
-		Fn: func(input Input) ParseResult[T] {
-			return f().Apply(input)
-		},
-	}
+	return ParserFunc[T](func(input Input) ParseResult[T] {
+		return f().Apply(input)
+	})
 }
