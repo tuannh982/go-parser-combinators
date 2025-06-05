@@ -127,4 +127,4 @@ Contributions are welcome! Please open an issue or pull request with your ideas 
 
 ## License
 
-MIT License. See LICENSE[TODO] for details.
+MIT License. See [LICENSE](LICENSE) for details.
